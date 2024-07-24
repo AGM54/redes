@@ -1,34 +1,49 @@
-def detectar_corregir(codigo_hamming):
-    n = len(codigo_hamming)
-    r = 0
+def calculate_parity(bits, positions):
+    parity = 0
+    for position in positions:
+        parity ^= int(bits[position - 1])
+    return parity
 
-    while (2**r) < n:
-        r += 1
-
+def detect_and_correct_error(encoded_bits, n, k):
+    r = n - k
     posicion_error = 0
 
     for i in range(r):
-        posicion_paridad = 2**i
+        posicion_paridad = 2 ** i
         paridad = 0
 
-        for j in range(1, n+1):
+        for j in range(1, n + 1):
             if j & posicion_paridad:
-                paridad ^= int(codigo_hamming[j-1])
+                paridad ^= int(encoded_bits[j - 1])
         posicion_error += paridad * posicion_paridad
 
-    if posicion_error:
+    if posicion_error != 0:
         posicion_error -= 1
-        codigo_corregido = list(codigo_hamming)
+        codigo_corregido = list(encoded_bits)
         codigo_corregido[posicion_error] = '1' if codigo_corregido[posicion_error] == '0' else '0'
-        codigo_hamming = ''.join(codigo_corregido)
+        encoded_bits = ''.join(codigo_corregido)
+        print(f"Error detected at position: {posicion_error + 1}")
+        print(f"Corrected encoded bits: {encoded_bits}")
+    else:
+        print("No error detected.")
 
-    return codigo_hamming, posicion_error + 1 if posicion_error else None
+    return encoded_bits
+
+def hamming_to_ascii(encoded_bits, n, k):
+    corrected_bits = detect_and_correct_error(encoded_bits, n, k)
+
+    data_bits = ""
+    for i in range(n):
+        if not (i + 1) & (i):
+            continue  
+        data_bits += corrected_bits[i]
+    
+    return data_bits
 
 
-# Simulación de error introducido
-codigo_recibido = input('Ingrese el código recibido: ')
-print(f'Código recibido con error: {codigo_recibido}')
+encoded_message = input("Ingrese el mensaje codificado: ")
+n = int(input("Ingrese el valor de n (número total de bits): "))
+k = int(input("Ingrese el valor de k (número de bits de datos): "))
 
-codigo_corregido, posicion_error = detectar_corregir(codigo_recibido)
-print(f'Código corregido: {codigo_corregido}')
-print(f'Posición del error: {posicion_error}' if posicion_error else 'No se detectó ningún error.')
+corrected_message = hamming_to_ascii(encoded_message, n, k)
+print("Mensaje original corregido:", corrected_message)
