@@ -28,6 +28,11 @@ public class CRC32Receptor {
         return crc ^ 0xFFFFFFFFL;
     }
 
+    public static int countErrors(long receivedCRC, long calculatedCRC) {
+        long diff = receivedCRC ^ calculatedCRC;
+        return Long.bitCount(diff);
+    }
+
     public static boolean checkCRC32(String messageWithCRC) {
         String messageBin = messageWithCRC.substring(0, messageWithCRC.length() - 32);
         String crcBin = messageWithCRC.substring(messageWithCRC.length() - 32);
@@ -36,7 +41,18 @@ public class CRC32Receptor {
         long receivedCRC = Long.parseUnsignedLong(crcBin, 2);
         long calculatedCRC = calculateCRC32(messageBytes);
 
-        return receivedCRC == calculatedCRC;
+        int errorCount = countErrors(receivedCRC, calculatedCRC);
+
+        if (errorCount == 0) {
+            System.out.println("No se detectaron errores.");
+            return true;
+        } else if (errorCount == 1) {
+            System.out.println("Se detectó 1 error en el CRC.");
+            return false;
+        } else {
+            System.out.println("Se detectaron " + errorCount + " errores en el CRC.");
+            return false;
+        }
     }
 
     public static void main(String[] args) {
@@ -46,9 +62,9 @@ public class CRC32Receptor {
 
         if (checkCRC32(binMessageWithCRC)) {
             String originalMessage = binMessageWithCRC.substring(0, binMessageWithCRC.length() - 32);
-            System.out.println("No se detectaron errores: " + originalMessage);
+            System.out.println("Mensaje original: " + originalMessage);
         } else {
-            System.out.println("Se detectaron errores: el mensaje se descarta.");
+            System.out.println("El mensaje se descarta.");
         }
     }
 }
