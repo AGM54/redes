@@ -1,3 +1,6 @@
+def is_valid_binary_string(data):
+    return all(char in '01' for char in data)
+
 def calculate_parity(bits, positions):
     parity = 0
     for position in positions:
@@ -22,10 +25,10 @@ def detect_and_correct_error(encoded_bits, n, k):
         codigo_corregido = list(encoded_bits)
         codigo_corregido[posicion_error] = '1' if codigo_corregido[posicion_error] == '0' else '0'
         encoded_bits = ''.join(codigo_corregido)
-        print(f"Error detected at position: {posicion_error + 1}")
-        print(f"Corrected encoded bits: {encoded_bits}")
+        print(f"Error detectado en la posición: {posicion_error + 1}")
+        print(f"Bits corregidos: {encoded_bits}")
     else:
-        print("No error detected.")
+        print("No se detectó ningún error.")
 
     return encoded_bits
 
@@ -40,10 +43,22 @@ def hamming_to_ascii(encoded_bits, n, k):
     
     return data_bits
 
+def main():
+    while True:
+        encoded_message = input("Ingrese el mensaje codificado: ")
+        if is_valid_binary_string(encoded_message):
+            n = int(input("Ingrese el valor de n (número total de bits): "))
+            if len(encoded_message) == n:
+                break
+            else:
+                print("El número total de bits no coincide con la longitud de la cadena ingresada.")
+        else:
+            print("Entrada no válida. Por favor, ingrese solo una cadena de bits (0s y 1s).")
+        
+    k = int(input("Ingrese el valor de k (número de bits de datos): "))
 
-encoded_message = input("Ingrese el mensaje codificado: ")
-n = int(input("Ingrese el valor de n (número total de bits): "))
-k = int(input("Ingrese el valor de k (número de bits de datos): "))
+    corrected_message = hamming_to_ascii(encoded_message, n, k)
+    print("Mensaje original corregido:", corrected_message)
 
-corrected_message = hamming_to_ascii(encoded_message, n, k)
-print("Mensaje original corregido:", corrected_message)
+if __name__ == "__main__":
+    main()
