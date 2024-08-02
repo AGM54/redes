@@ -41,4 +41,4 @@ El receptor está implementado en Java y realiza las siguientes funciones:
    javac Receptor.java
    java Receptor
 
-4. 
+
