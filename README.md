@@ -34,3 +34,11 @@ El receptor está implementado en Java y realiza las siguientes funciones:
 2. Ejecute el script del emisor en Python:
    ```sh
    python emisor.py
+### Receptor
+1. Asegúrese de tener Java instalado.
+2. Compile y ejecute el receptor en Java
+    ```sh
+   javac Receptor.java
+   java Receptor
+
+4. 
